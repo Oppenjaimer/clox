@@ -2,21 +2,24 @@
 #define CLOX_CHUNK_H
 
 #include "common.h"
+#include "value.h"
 
 /**
  * @brief Enumeration of all instruction opcodes.
  */
 typedef enum {
-    OP_RETURN,  /// Return from current function.
+    OP_CONSTANT,    /// Constant value.
+    OP_RETURN,      /// Return from current function.
 } Opcode;
 
 /**
  * @brief Dynamic array to store bytecode sequences.
  */
 typedef struct {
-    size_t count;       /// Current number of elements.
-    size_t capacity;    /// Maximum number of elements.
-    uint8_t *code;      /// Actual bytecode sequence.
+    size_t count;           /// Current number of elements.
+    size_t capacity;        /// Maximum number of elements.
+    uint8_t *code;          /// Actual bytecode sequence.
+    ValueArray constants;   /// Constant pool.
 } Chunk;
 
 /**
@@ -43,5 +46,13 @@ void chunk_free(Chunk *chunk);
  * @param byte Byte to append.
  */
 void chunk_write(Chunk *chunk, uint8_t byte);
+
+/**
+ * @brief Add a new constant to a chunk.
+ * @param chunk Chunk to add the constant to.
+ * @param value Constant value.
+ * @return Index where the constant was added.
+ */
+size_t chunk_add_constant(Chunk *chunk, Value value);
 
 #endif
