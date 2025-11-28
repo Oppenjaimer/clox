@@ -19,6 +19,7 @@ typedef struct {
     size_t count;           /// Current number of elements.
     size_t capacity;        /// Maximum number of elements.
     uint8_t *code;          /// Actual bytecode sequence.
+    int *lines;             /// Program line numbers.
     ValueArray constants;   /// Constant pool.
 } Chunk;
 
@@ -44,8 +45,9 @@ void chunk_free(Chunk *chunk);
  * 
  * @param chunk Chunk to modify.
  * @param byte Byte to append.
+ * @param line Source line where write occurs.
  */
-void chunk_write(Chunk *chunk, uint8_t byte);
+void chunk_write(Chunk *chunk, uint8_t byte, int line);
 
 /**
  * @brief Add a new constant to a chunk.

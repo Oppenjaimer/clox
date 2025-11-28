@@ -30,6 +30,12 @@ void chunk_disassemble(Chunk *chunk, const char *name) {
 size_t instruction_disassemble(Chunk *chunk, size_t offset) {
     printf("%04ld ", offset);
 
+    if (chunk->lines[offset] == chunk->lines[offset - 1]) {
+        printf("   | ");
+    } else {
+        printf("%4d ", chunk->lines[offset]);
+    }
+
     uint8_t opcode = chunk->code[offset];
     switch (opcode) {
         case OP_CONSTANT:
