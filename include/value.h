@@ -17,7 +17,7 @@ void value_print(Value value);
 typedef struct {
     size_t count;       /// Current number of values.
     size_t capacity;    /// Maximum number of values.
-    Value *values;      // Actual array of values.
+    Value *values;      /// Actual array of values.
 } ValueArray;
 
 /**

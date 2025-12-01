@@ -2,6 +2,7 @@
 #define CLOX_CHUNK_H
 
 #include "common.h"
+#include "line.h"
 #include "value.h"
 
 /**
@@ -19,7 +20,7 @@ typedef struct {
     size_t count;           /// Current number of elements.
     size_t capacity;        /// Maximum number of elements.
     uint8_t *code;          /// Actual bytecode sequence.
-    int *lines;             /// Program line numbers.
+    LineArray lines;        /// Program line information.
     ValueArray constants;   /// Constant pool.
 } Chunk;
 
@@ -56,5 +57,13 @@ void chunk_write(Chunk *chunk, uint8_t byte, int line);
  * @return Index where the constant was added.
  */
 size_t chunk_add_constant(Chunk *chunk, Value value);
+
+/**
+ * @brief Get the line number where an instruction occurs within a chunk.
+ * @param chunk Chunk containing the instruction.
+ * @param index Index of the instruction within the chunk.
+ * @return Line number of the instruction.
+ */
+int chunk_get_line(Chunk *chunk, size_t index);
 
 #endif

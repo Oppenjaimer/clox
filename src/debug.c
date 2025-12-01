@@ -18,22 +18,14 @@ static int simple_instruction(const char *name, size_t offset) {
     return offset + 1;
 }
 
-void chunk_disassemble(Chunk *chunk, const char *name) {
-    printf("=== %s ===\n", name);
-
-    size_t offset = 0;
-    while (offset < chunk->count) {
-        offset = instruction_disassemble(chunk, offset);
-    }
-}
-
-size_t instruction_disassemble(Chunk *chunk, size_t offset) {
+size_t instruction_disassemble(Chunk *chunk, size_t offset, size_t previous_offset) {
     printf("%04ld ", offset);
 
-    if (chunk->lines[offset] == chunk->lines[offset - 1]) {
+    int line = chunk_get_line(chunk, offset);
+    if (offset > 0 && line == chunk_get_line(chunk, previous_offset)) {
         printf("   | ");
     } else {
-        printf("%4d ", chunk->lines[offset]);
+        printf("%4d ", line);
     }
 
     uint8_t opcode = chunk->code[offset];
@@ -43,9 +35,22 @@ size_t instruction_disassemble(Chunk *chunk, size_t offset) {
 
         case OP_RETURN:
             return simple_instruction("OP_RETURN", offset);
-        
+
         default:
             printf("Unknown opcode %d\n", opcode);
             return offset + 1;
+    }
+}
+
+void chunk_disassemble(Chunk *chunk, const char *name) {
+    printf("=== %s ===\n", name);
+
+    size_t offset = 0;
+    size_t previous_offset = 0;
+
+    while (offset < chunk->count) {
+        size_t new_offset = instruction_disassemble(chunk, offset, previous_offset);
+        previous_offset = offset;
+        offset = new_offset;
     }
 }
