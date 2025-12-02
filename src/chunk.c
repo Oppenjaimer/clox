@@ -30,9 +30,19 @@ void chunk_write(Chunk *chunk, uint8_t byte, int line) {
     line_array_write(&chunk->lines, line);
 }
 
-size_t chunk_add_constant(Chunk *chunk, Value value) {
+void chunk_write_constant(Chunk *chunk, Value value, int line) {
     value_array_write(&chunk->constants, value);
-    return chunk->constants.count - 1;
+    size_t index = chunk->constants.count - 1;
+
+    if (index <= UINT8_MAX) {
+        chunk_write(chunk, OP_CONSTANT, line);
+        chunk_write(chunk, index, line);
+    } else {
+        chunk_write(chunk, OP_CONSTANT_LONG, line);
+        chunk_write(chunk, (index >> 16) & UINT8_MAX, line);
+        chunk_write(chunk, (index >>  8) & UINT8_MAX, line);
+        chunk_write(chunk, (index >>  0) & UINT8_MAX, line);
+    }
 }
 
 int chunk_get_line(Chunk *chunk, size_t index) {

@@ -9,8 +9,9 @@
  * @brief Enumeration of all instruction opcodes.
  */
 typedef enum {
-    OP_CONSTANT,    /// Constant value.
-    OP_RETURN,      /// Return from current function.
+    OP_CONSTANT,        /// Constant value with 8-bit operand.
+    OP_CONSTANT_LONG,   /// Constant value with 24-bit operand.
+    OP_RETURN,          /// Return from current function.
 } Opcode;
 
 /**
@@ -51,12 +52,12 @@ void chunk_free(Chunk *chunk);
 void chunk_write(Chunk *chunk, uint8_t byte, int line);
 
 /**
- * @brief Add a new constant to a chunk.
- * @param chunk Chunk to add the constant to.
+ * @brief Add a new constant to a chunk and write the appropriate instruction to load it.
+ * @param chunk Chunk to add the constant and instruction to.
  * @param value Constant value.
- * @return Index where the constant was added.
+ * @param line Source line where write occurs.
  */
-size_t chunk_add_constant(Chunk *chunk, Value value);
+void chunk_write_constant(Chunk *chunk, Value value, int line);
 
 /**
  * @brief Get the line number where an instruction occurs within a chunk.
